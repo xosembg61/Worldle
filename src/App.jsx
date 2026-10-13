@@ -1,9 +1,16 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Casilla from './components/Casilla.jsx'
+import Teclado from './components/Teclado.jsx'
+import { estadosDe } from './juego.js'
 
 const FILAS = 6
 const COLUMNAS = 5
-const SOLUCION = 'PERRO'
+const PALABRAS = ['PERRO', 'GATOS', 'CASAS', 'LIBRO', 'NUBES', 'VERDE', 'MUNDO', 'FUEGO', 'PLATO', 'QUESO', 'RADIO', 'SILLA', 'ARBOL']
+
+function elegirSolucion(anterior) {
+  const opciones = PALABRAS.filter((palabra) => palabra !== anterior)
+  return opciones[Math.floor(Math.random() * opciones.length)]
+}
 
 // Crea un tablero vacío: 6 filas de 5 letras en blanco
 function tableroVacio() {
@@ -14,20 +21,16 @@ function tableroVacio() {
   return tablero
 }
 
-// Decide el color de una letra ya comprobada
-function estadoDe(letra, columna) {
-  if (SOLUCION[columna] === letra) return 'correcta'
-  if (SOLUCION.includes(letra)) return 'presente'
-  return 'ausente'
-}
-
 function App() {
   const [intentos, setIntentos] = useState(tableroVacio())
-const [filaActual, setFilaActual] = useState(0)
+  const [filaActual, setFilaActual] = useState(0)
+  const [solucion, setSolucion] = useState(() => elegirSolucion())
+  const [aviso, setAviso] = useState('')
+  const cursor = useRef(null)
 
   // El último intento comprobado, como texto: 'PERRO'
   const ultimo = filaActual > 0 ? intentos[filaActual - 1].join('') : ''
-  const ganada = ultimo === SOLUCION
+  const ganada = ultimo === solucion
   const terminada = ganada || filaActual === FILAS
 
   useEffect(() => {
@@ -44,9 +47,37 @@ const [filaActual, setFilaActual] = useState(0)
     const copia = intentos.map((fila) => [...fila])
     copia[f][c] = letra
     setIntentos(copia)
+    setAviso('')
 
     // Después de escribir una letra, pasamos a la casilla siguiente
     if (letra !== '') evento.target.nextElementSibling?.focus()
+  }
+
+  function manejarRetroceso(evento) {
+    if (evento.key === 'Backspace' && evento.currentTarget.value === '') {
+      evento.preventDefault()
+      evento.currentTarget.previousElementSibling?.focus()
+    }
+  }
+
+  function insertarLetra(letra) {
+    const destino = cursor.current ?? { fila: filaActual, columna: 0 }
+    const { fila, columna } = destino
+    if (fila !== filaActual || terminada) return
+
+    const copia = intentos.map((intento) => [...intento])
+    copia[fila][columna] = letra
+    setIntentos(copia)
+    setAviso('')
+    document.querySelector(`[data-fila="${fila}"][data-columna="${columna + 1}"]:enabled`)?.focus()
+  }
+
+  function nuevaPartida() {
+    setIntentos(tableroVacio())
+    setFilaActual(0)
+    setSolucion(elegirSolucion(solucion))
+    setAviso('')
+    cursor.current = null
   }
 
   function comprobar(evento) {
@@ -54,9 +85,25 @@ const [filaActual, setFilaActual] = useState(0)
     evento.preventDefault()
     if (terminada) return
     // No se puede comprobar una fila incompleta
-    if (intentos[filaActual].includes('')) return
+    if (intentos[filaActual].includes('')) {
+      setAviso('Faltan letras')
+      return
+    }
 
+    setAviso('')
     setFilaActual(filaActual + 1)
+  }
+
+  const estadosTeclado = {}
+  for (let fila = 0; fila < filaActual; fila++) {
+    const estados = estadosDe(intentos[fila].join(''), solucion)
+    estados.forEach((estado, columna) => {
+      const letra = intentos[fila][columna]
+      const prioridad = { ausente: 1, presente: 2, correcta: 3 }
+      if (!estadosTeclado[letra] || prioridad[estado] > prioridad[estadosTeclado[letra]]) {
+        estadosTeclado[letra] = estado
+      }
+    })
   }
 
   return (
@@ -69,22 +116,35 @@ const [filaActual, setFilaActual] = useState(0)
               <Casilla
                 key={c}
                 letra={letra}
-                estado={f < filaActual ? estadoDe(letra, c) : ''}
+                fila={f}
+                columna={c}
+                estado={f < filaActual ? estadosDe(fila.join(''), solucion)[c] : ''}
                 activa={f === filaActual && !terminada}
                 onCambio={(evento) => cambiarLetra(f, c, evento)}
+                onKeyDown={manejarRetroceso}
+                onEnfocar={() => { cursor.current = { fila: f, columna: c } }}
               />
             ))}
           </div>
         ))}
       </div>
       {terminada ? (
-        <p className="mensaje" role="status">
-          {ganada ? '¡Enhorabuena, has acertado!' : `La palabra era ${SOLUCION}`}
-        </p>
+        <div className="final">
+          <p className="mensaje" role="status">
+            {ganada ? '¡Enhorabuena, has acertado!' : `La palabra era ${solucion}`}
+          </p>
+          <button className="boton" type="button" onClick={nuevaPartida}>
+            Nueva partida
+          </button>
+        </div>
       ) : (
-        <button className="boton" type="submit">
-          Comprobar
-        </button>
+        <>
+          <button className="boton" type="submit">
+            Comprobar
+          </button>
+          <p className="aviso" role="status">{aviso}</p>
+          <Teclado estados={estadosTeclado} onLetra={insertarLetra} />
+        </>
       )}
     </form>
   )
