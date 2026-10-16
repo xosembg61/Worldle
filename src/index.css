@@ -2,11 +2,15 @@
   box-sizing: border-box;
 }
 
+html {
+  color-scheme: dark;
+}
+
 body {
   margin: 0;
   font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
-  background: #ffffff;
-  color: #1a1a1b;
+  background: #121213;
+  color: #f8f9fa;
 }
 
 .juego {
@@ -26,9 +30,9 @@ body {
   width: 58px;
   height: 58px;
   padding: 0;
-  border: 2px solid #878a8c;
-  background: #ffffff;
-  color: #1a1a1b;
+  border: 2px solid #3a3a3c;
+  background: #121213;
+  color: #f8f9fa;
   font: inherit;
   font-size: 2rem;
   font-weight: bold;
@@ -37,23 +41,23 @@ body {
 }
 
 .casilla.correcta {
-  background: #2e7d32;
-  border-color: #2e7d32;
+  background: #538d4e;
+  border-color: #538d4e;
   border-style: solid;
   border-width: 4px;
   color: #ffffff;
 }
 
 .casilla.presente {
-  background: #f2c94c;
-  border-color: #f2c94c;
+  background: #b59f3b;
+  border-color: #b59f3b;
   border-style: dashed;
   color: #1a1a1b;
 }
 
 .casilla.ausente {
-  background: #5f6368;
-  border-color: #5f6368;
+  background: #3a3a3c;
+  border-color: #3a3a3c;
   border-style: double;
   border-width: 4px;
   color: #ffffff;
@@ -74,7 +78,7 @@ body {
 .casilla:focus-visible,
 .boton:focus-visible,
 .tecla:focus-visible {
-  outline: 3px solid #1a73e8;
+  outline: 3px solid #8ab4f8;
   outline-offset: 2px;
 }
 
@@ -82,7 +86,7 @@ body {
   padding: 10px 20px;
   border: none;
   border-radius: 4px;
-  background: #1a1a1b;
+  background: #538d4e;
   color: #ffffff;
   font: inherit;
   font-weight: bold;
@@ -124,29 +128,30 @@ body {
   min-width: 30px;
   height: 42px;
   padding: 0 7px;
-  border: 1px solid #878a8c;
+  border: 1px solid #565758;
   border-radius: 3px;
-  background: #e4e6e8;
-  color: #1a1a1b;
+  background: #3a3a3c;
+  color: #f8f9fa;
   font: inherit;
   font-weight: bold;
   cursor: pointer;
 }
 
 .tecla.correcta {
-  border: 3px solid #2e7d32;
-  background: #2e7d32;
+  border: 3px solid #538d4e;
+  background: #538d4e;
   color: #ffffff;
 }
 
 .tecla.presente {
-  border: 2px dashed #9b7100;
-  background: #f2c94c;
+  border: 2px dashed #b59f3b;
+  background: #b59f3b;
+  color: #1a1a1b;
 }
 
 .tecla.ausente {
-  border: 3px double #5f6368;
-  background: #5f6368;
+  border: 3px double #3a3a3c;
+  background: #3a3a3c;
   color: #ffffff;
 }
 

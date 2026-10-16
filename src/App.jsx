@@ -5,7 +5,18 @@ import { estadosDe } from './juego.js'
 
 const FILAS = 6
 const COLUMNAS = 5
-const PALABRAS = ['PERRO', 'GATOS', 'CASAS', 'LIBRO', 'NUBES', 'VERDE', 'MUNDO', 'FUEGO', 'PLATO', 'QUESO', 'RADIO', 'SILLA', 'ARBOL']
+const PALABRAS = [
+  'PERRO', 'GATOS', 'CASAS', 'LIBRO', 'NUBES', 'VERDE', 'MUNDO', 'FUEGO', 'PLATO', 'QUESO',
+  'RADIO', 'SILLA', 'ARBOL', 'LUNAS', 'SOLAR', 'AGUAS', 'MARCO', 'NIEVE', 'VUELO', 'RAPTO',
+  'JUEGO', 'FELIZ', 'AMIGO', 'PLAYA', 'SELVA', 'CLAVE', 'LIMON', 'MANOS', 'PINTA', 'FALSO',
+  'CANTO', 'ROSAS', 'PARED', 'TIENE', 'TAREA', 'MARCA', 'METAS', 'RURAL', 'DULCE', 'CIELO',
+  'NARDO', 'PRADO', 'BRISA', 'CUBRE', 'VIVIR', 'LARGO', 'MENTE', 'ORSOS', 'SABOR', 'CHICO',
+  'RAZON', 'ALERO', 'ASADO', 'AVION', 'BAILE', 'BARCO', 'BASAR', 'BELLO', 'BICHO', 'BLUSA',
+  'BOLAR', 'BORRA', 'BRAVO', 'BURRO', 'CABRA', 'CALDO', 'CALMA', 'CAMPO', 'CARRO', 'CASCO',
+  'CEDRO', 'CERCA', 'COBRO', 'CORAL', 'CUERO', 'DARDO', 'DEBIL', 'DUCHA', 'EJIDO', 'ELIGE',
+  'ENEMA', 'FIRME', 'GANAR', 'GIRAR', 'GLOBO', 'GRANO', 'HABLA', 'HACER', 'HIELO', 'IGUAL',
+  'JUGAR', 'LABIO', 'LOGRO', 'MANGO', 'MEDIR', 'NOVEL', 'ORDEN', 'OTROS', 'PASAR', 'PLUMA'
+]
 
 function elegirSolucion(anterior) {
   const opciones = PALABRAS.filter((palabra) => palabra !== anterior)
